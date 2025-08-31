@@ -318,7 +318,7 @@ class ClientManager:
                 skip_init_checks=True,
             )
 
-        if self.wcd_url is None or self.wcd_api_key is None:
+        if not self.weaviate_is_local and (self.wcd_url is None or self.wcd_api_key is None):
             raise ValueError("WCD_URL and WCD_API_KEY must be set")
 
         if self.logger:
@@ -352,7 +352,7 @@ class ClientManager:
                 skip_init_checks=True,
             )
 
-        if self.wcd_url is None or self.wcd_api_key is None:
+        if not self.weaviate_is_local and (self.wcd_url is None or self.wcd_api_key is None):
             raise ValueError("WCD_URL and WCD_API_KEY must be set")
 
         return weaviate.use_async_with_weaviate_cloud(
