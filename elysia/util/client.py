@@ -296,9 +296,8 @@ class ClientManager:
 
     def get_client(self) -> WeaviateClient:
         if self.weaviate_is_local and self.wcd_url is not None:
-            auth_credentials = (
-                Auth.api_key(self.wcd_api_key) if self.wcd_api_key != "" else None
-            )
+            # For local mode with anonymous access, don't pass auth_credentials
+            auth_credentials = None
             host, port = self._get_local_host_and_port()
             if self.logger:
                 self.logger.info(
@@ -327,9 +326,8 @@ class ClientManager:
 
     async def get_async_client(self) -> WeaviateAsyncClient:
         if self.weaviate_is_local and self.wcd_url is not None:
-            auth_credentials = (
-                Auth.api_key(self.wcd_api_key) if self.wcd_api_key != "" else None
-            )
+            # For local mode with anonymous access, don't pass auth_credentials
+            auth_credentials = None
             host, port = self._get_local_host_and_port()
             if self.logger:
                 self.logger.info(
