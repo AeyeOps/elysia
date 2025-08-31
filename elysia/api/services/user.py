@@ -175,6 +175,9 @@ class UserManager:
                 logger=logger,
                 client_timeout=fe_config.config["client_timeout"],
                 settings=self.users[user_id]["tree_manager"].config.settings,
+                weaviate_is_local=self.users[user_id]["tree_manager"].config.settings.WEAVIATE_IS_LOCAL,
+                local_weaviate_port=self.users[user_id]["tree_manager"].config.settings.LOCAL_WEAVIATE_PORT,
+                local_weaviate_grpc_port=self.users[user_id]["tree_manager"].config.settings.LOCAL_WEAVIATE_GRPC_PORT,
             )
 
     async def get_user_local(self, user_id: str):
