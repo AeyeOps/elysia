@@ -333,10 +333,15 @@ class UserManager:
                 "frontend_config"
             ].save_location_client_manager
         else:
+            # Check if this is a local Weaviate instance
+            is_local = wcd_url and ("localhost" in wcd_url or "127.0.0.1" in wcd_url)
             save_location_client_manager = ClientManager(
                 logger=logger,
                 wcd_url=wcd_url,
                 wcd_api_key=wcd_api_key,
+                weaviate_is_local=is_local,
+                local_weaviate_port=8080,
+                local_weaviate_grpc_port=50051,
             )
 
         await tree_manager.save_tree_weaviate(
@@ -373,10 +378,15 @@ class UserManager:
                 "frontend_config"
             ].save_location_client_manager
         else:
+            # Check if this is a local Weaviate instance
+            is_local = wcd_url and ("localhost" in wcd_url or "127.0.0.1" in wcd_url)
             save_location_client_manager = ClientManager(
                 logger=logger,
                 wcd_url=wcd_url,
                 wcd_api_key=wcd_api_key,
+                weaviate_is_local=is_local,
+                local_weaviate_port=8080,
+                local_weaviate_grpc_port=50051,
             )
 
         return await tree_manager.check_tree_exists_weaviate(
@@ -415,10 +425,15 @@ class UserManager:
                 "frontend_config"
             ].save_location_client_manager
         else:
+            # Check if this is a local Weaviate instance
+            is_local = wcd_url and ("localhost" in wcd_url or "127.0.0.1" in wcd_url)
             save_location_client_manager = ClientManager(
                 logger=logger,
                 wcd_url=wcd_url,
                 wcd_api_key=wcd_api_key,
+                weaviate_is_local=is_local,
+                local_weaviate_port=8080,
+                local_weaviate_grpc_port=50051,
             )
 
         return await tree_manager.load_tree_weaviate(
@@ -454,10 +469,15 @@ class UserManager:
                 "frontend_config"
             ].save_location_client_manager
         else:
+            # Check if this is a local Weaviate instance
+            is_local = wcd_url and ("localhost" in wcd_url or "127.0.0.1" in wcd_url)
             save_location_client_manager = ClientManager(
                 logger=logger,
                 wcd_url=wcd_url,
                 wcd_api_key=wcd_api_key,
+                weaviate_is_local=is_local,
+                local_weaviate_port=8080,
+                local_weaviate_grpc_port=50051,
             )
 
         await tree_manager.delete_tree_weaviate(
@@ -500,10 +520,15 @@ class UserManager:
                 "frontend_config"
             ].save_location_client_manager
         else:
+            # Check if this is a local Weaviate instance
+            is_local = wcd_url and ("localhost" in wcd_url or "127.0.0.1" in wcd_url)
             save_location_client_manager = ClientManager(
                 logger=logger,
                 wcd_url=wcd_url,
                 wcd_api_key=wcd_api_key,
+                weaviate_is_local=is_local,
+                local_weaviate_port=8080,
+                local_weaviate_grpc_port=50051,
             )
 
         return await get_saved_trees_weaviate(

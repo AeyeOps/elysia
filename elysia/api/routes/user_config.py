@@ -488,6 +488,9 @@ async def save_config_user(
                         inverted_index_config=wc.Configure.inverted_index(
                             index_timestamps=True
                         ),
+                        replication_config=wc.Configure.replication(
+                            factor=3
+                        ),
                         properties=[
                             Property(
                                 name="name",
