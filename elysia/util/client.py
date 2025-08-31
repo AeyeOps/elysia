@@ -295,14 +295,18 @@ class ClientManager:
         self.last_used_async_client = datetime.datetime.now()
 
     def get_client(self) -> WeaviateClient:
+        if self.logger:
+            self.logger.info(
+                f"get_client called: weaviate_is_local={self.weaviate_is_local}, "
+                f"wcd_url={self.wcd_url}, wcd_url_is_none={self.wcd_url is None}"
+            )
         if self.weaviate_is_local and self.wcd_url is not None:
             # For local mode with anonymous access, don't pass auth_credentials
             auth_credentials = None
             host, port = self._get_local_host_and_port()
             if self.logger:
                 self.logger.info(
-                    f"Getting client with weaviate_is_local: {self.weaviate_is_local}, "
-                    f"wcd_url: {self.wcd_url}, parsed_host: {host}, api_key_set: {self.wcd_api_key != ''}, "
+                    f"Using LOCAL connection with host: {host}, "
                     f"http_port: {port}, grpc_port: {self.local_weaviate_grpc_port}"
                 )
             return weaviate.connect_to_local(
@@ -317,6 +321,10 @@ class ClientManager:
         if self.wcd_url is None or self.wcd_api_key is None:
             raise ValueError("WCD_URL and WCD_API_KEY must be set")
 
+        if self.logger:
+            self.logger.warning(
+                f"Using CLOUD connection (not local) with url: {self.wcd_url}"
+            )
         return weaviate.connect_to_weaviate_cloud(
             cluster_url=self.wcd_url,
             auth_credentials=Auth.api_key(self.wcd_api_key),
