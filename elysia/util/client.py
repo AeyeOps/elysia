@@ -196,9 +196,12 @@ class ClientManager:
         """
         Derive host and port for local connections from wcd_url and configured ports.
         Accepts full URLs like "http://localhost:8080" and extracts hostname/port.
+        Also calculates the corresponding gRPC port based on HTTP port offset.
         """
         host = self.wcd_url if self.wcd_url is not None else "localhost"
         port = self.local_weaviate_port
+        grpc_port = self.local_weaviate_grpc_port  # Track gRPC port
+        
         try:
             parsed = urlparse(host)
             if parsed.scheme in ("http", "https"):
@@ -206,6 +209,28 @@ class ClientManager:
                     host = parsed.hostname
                 if parsed.port:
                     port = parsed.port
+                    # Calculate gRPC port offset based on HTTP port
+                    if self.local_weaviate_port and self.local_weaviate_grpc_port:
+                        # Calculate offset from default HTTP port
+                        http_offset = port - self.local_weaviate_port
+                        # Apply same offset to gRPC port
+                        calculated_grpc_port = self.local_weaviate_grpc_port + http_offset
+                        
+                        # Validate the calculated port is within valid range
+                        if 1 <= calculated_grpc_port <= 65535:
+                            grpc_port = calculated_grpc_port
+                            if self.logger:
+                                self.logger.debug(
+                                    f"Calculated gRPC port {grpc_port} from HTTP port {port} "
+                                    f"(offset: {http_offset})"
+                                )
+                        else:
+                            if self.logger:
+                                self.logger.warning(
+                                    f"Calculated gRPC port {calculated_grpc_port} is out of valid range "
+                                    f"(1-65535), using default gRPC port {self.local_weaviate_grpc_port}"
+                                )
+                            grpc_port = self.local_weaviate_grpc_port
             # If no scheme, assume the value is a bare hostname (optionally with :port)
             elif ":" in host:
                 # Split manually to support host:port form without scheme
@@ -213,12 +238,34 @@ class ClientManager:
                 host = parts[0]
                 try:
                     port = int(parts[1])
+                    # Calculate gRPC port offset for bare host:port format too
+                    if self.local_weaviate_port and self.local_weaviate_grpc_port:
+                        http_offset = port - self.local_weaviate_port
+                        calculated_grpc_port = self.local_weaviate_grpc_port + http_offset
+                        
+                        if 1 <= calculated_grpc_port <= 65535:
+                            grpc_port = calculated_grpc_port
+                            if self.logger:
+                                self.logger.debug(
+                                    f"Calculated gRPC port {grpc_port} from HTTP port {port} "
+                                    f"(offset: {http_offset})"
+                                )
+                        else:
+                            if self.logger:
+                                self.logger.warning(
+                                    f"Calculated gRPC port {calculated_grpc_port} is out of valid range "
+                                    f"(1-65535), using default gRPC port {self.local_weaviate_grpc_port}"
+                                )
+                            grpc_port = self.local_weaviate_grpc_port
                 except Exception:
                     port = self.local_weaviate_port
         except Exception:
             # Fallback to defaults
             host = "localhost" if not host else host
             port = self.local_weaviate_port
+            
+        # Store calculated gRPC port for use in get_client/get_async_client
+        self._calculated_grpc_port = grpc_port
         return host, port
 
     async def reset_keys(
@@ -304,15 +351,16 @@ class ClientManager:
             # For local mode with anonymous access, don't pass auth_credentials
             auth_credentials = None
             host, port = self._get_local_host_and_port()
+            grpc_port = getattr(self, '_calculated_grpc_port', self.local_weaviate_grpc_port)
             if self.logger:
                 self.logger.info(
                     f"Using LOCAL connection with host: {host}, "
-                    f"http_port: {port}, grpc_port: {self.local_weaviate_grpc_port}"
+                    f"http_port: {port}, grpc_port: {grpc_port}"
                 )
             return weaviate.connect_to_local(
                 host=host,
                 port=port,
-                grpc_port=self.local_weaviate_grpc_port,
+                grpc_port=grpc_port,
                 auth_credentials=auth_credentials,
                 headers=self.headers,
                 skip_init_checks=True,
@@ -337,16 +385,17 @@ class ClientManager:
             # For local mode with anonymous access, don't pass auth_credentials
             auth_credentials = None
             host, port = self._get_local_host_and_port()
+            grpc_port = getattr(self, '_calculated_grpc_port', self.local_weaviate_grpc_port)
             if self.logger:
                 self.logger.info(
                     f"Getting async client with weaviate_is_local: {self.weaviate_is_local}, "
                     f"wcd_url: {self.wcd_url}, parsed_host: {host}, api_key_set: {self.wcd_api_key != ''}, "
-                    f"http_port: {port}, grpc_port: {self.local_weaviate_grpc_port}"
+                    f"http_port: {port}, grpc_port: {grpc_port}"
                 )
             return weaviate.use_async_with_local(
                 host=host,
                 port=port,
-                grpc_port=self.local_weaviate_grpc_port,
+                grpc_port=grpc_port,
                 auth_credentials=auth_credentials,
                 headers=self.headers,
                 skip_init_checks=True,
