@@ -340,8 +340,8 @@ class UserManager:
                 wcd_url=wcd_url,
                 wcd_api_key=wcd_api_key,
                 weaviate_is_local=is_local,
-                local_weaviate_port=8080,
-                local_weaviate_grpc_port=50051,
+                local_weaviate_port=local_user["frontend_config"].save_location_local_weaviate_port,
+                local_weaviate_grpc_port=local_user["frontend_config"].save_location_local_weaviate_grpc_port,
             )
 
         await tree_manager.save_tree_weaviate(
@@ -385,8 +385,8 @@ class UserManager:
                 wcd_url=wcd_url,
                 wcd_api_key=wcd_api_key,
                 weaviate_is_local=is_local,
-                local_weaviate_port=8080,
-                local_weaviate_grpc_port=50051,
+                local_weaviate_port=local_user["frontend_config"].save_location_local_weaviate_port,
+                local_weaviate_grpc_port=local_user["frontend_config"].save_location_local_weaviate_grpc_port,
             )
 
         return await tree_manager.check_tree_exists_weaviate(
@@ -432,8 +432,8 @@ class UserManager:
                 wcd_url=wcd_url,
                 wcd_api_key=wcd_api_key,
                 weaviate_is_local=is_local,
-                local_weaviate_port=8080,
-                local_weaviate_grpc_port=50051,
+                local_weaviate_port=local_user["frontend_config"].save_location_local_weaviate_port,
+                local_weaviate_grpc_port=local_user["frontend_config"].save_location_local_weaviate_grpc_port,
             )
 
         return await tree_manager.load_tree_weaviate(
@@ -476,8 +476,8 @@ class UserManager:
                 wcd_url=wcd_url,
                 wcd_api_key=wcd_api_key,
                 weaviate_is_local=is_local,
-                local_weaviate_port=8080,
-                local_weaviate_grpc_port=50051,
+                local_weaviate_port=local_user["frontend_config"].save_location_local_weaviate_port,
+                local_weaviate_grpc_port=local_user["frontend_config"].save_location_local_weaviate_grpc_port,
             )
 
         await tree_manager.delete_tree_weaviate(
@@ -527,8 +527,8 @@ class UserManager:
                 wcd_url=wcd_url,
                 wcd_api_key=wcd_api_key,
                 weaviate_is_local=is_local,
-                local_weaviate_port=8080,
-                local_weaviate_grpc_port=50051,
+                local_weaviate_port=local_user["frontend_config"].save_location_local_weaviate_port,
+                local_weaviate_grpc_port=local_user["frontend_config"].save_location_local_weaviate_grpc_port,
             )
 
         return await get_saved_trees_weaviate(
