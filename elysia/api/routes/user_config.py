@@ -18,6 +18,7 @@ from elysia.api.core.log import logger
 from elysia.api.dependencies.common import get_user_manager
 from elysia.api.services.user import UserManager
 from elysia.util.parsing import format_dict_to_serialisable, format_datetime
+from elysia.util.client import get_system_replication_config
 from elysia.config import Settings
 from elysia.api.services.tree import TreeManager
 from elysia.api.utils.config import FrontendConfig
@@ -488,9 +489,7 @@ async def save_config_user(
                         inverted_index_config=wc.Configure.inverted_index(
                             index_timestamps=True
                         ),
-                        replication_config=wc.Configure.replication(
-                            factor=3
-                        ),
+                        replication_config=await get_system_replication_config(client),
                         properties=[
                             Property(
                                 name="name",

@@ -11,6 +11,7 @@ from weaviate.util import generate_uuid5
 from elysia.tree.tree import Tree
 from elysia.util.parsing import format_datetime
 from elysia.api.core.log import logger
+from elysia.util.client import get_system_replication_config
 import weaviate.classes.config as wc
 
 
@@ -176,6 +177,7 @@ async def create_feedback_collection(client):
                 ),
             ),
         ],
+        replication_config=await get_system_replication_config(client),
     )
     logger.info("Feedback collection (ELYSIA_FEEDBACK__) created!")
 

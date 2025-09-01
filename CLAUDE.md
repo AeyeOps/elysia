@@ -13,6 +13,8 @@ When working in this codebase:
 - **Maintain code style** - Follow the existing code formatting and naming conventions
 - **No unsolicited documentation** - Don't create README or documentation files unless explicitly requested
 - **Security first** - Never expose or log sensitive information like API keys or tokens
+- **Import statements** - Always place imports at the top of the file, never in try/catch blocks or conditionally
+- **Fail fast principle** - Don't compensate for misconfigurations; fail immediately with clear errors
 
 ## Development Commands
 

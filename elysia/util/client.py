@@ -9,6 +9,7 @@ from logging import Logger
 from urllib.parse import urlparse
 
 import weaviate
+import weaviate.classes.config as wc
 from weaviate.classes.init import Auth
 from weaviate.client import WeaviateClient, WeaviateAsyncClient
 from elysia.config import settings as environment_settings, Settings
@@ -699,3 +700,58 @@ class _AsyncClientConnection:
         async with self.manager.async_lock:
             self.manager.async_in_use_counter -= 1
         self.manager.update_last_used_async_client()
+
+
+async def get_system_replication_config(client):
+    """
+    Get replication config for system collections (CONFIG, FEEDBACK, METADATA).
+    System collections MUST replicate to all nodes for consistency.
+    
+    Args:
+        client: WeaviateAsyncClient instance from client_manager.connect_to_async_client()
+        
+    Returns:
+        wc.Configure.replication(factor=node_count) or None if single node or error
+        
+    Raises:
+        ValueError: If cluster information cannot be retrieved (fail-fast approach)
+    """
+    try:
+        nodes = await client.cluster.nodes()
+        node_count = len(nodes)
+        if node_count <= 1:
+            return None  # Single node clusters don't need replication
+        return wc.Configure.replication(factor=node_count)
+    except Exception as e:
+        # Fail fast - if we can't determine cluster size, raise error
+        raise ValueError(f"Cannot determine cluster size for replication config: {e}")
+
+
+async def get_derived_replication_config(client, parent_collection_name):
+    """
+    Get replication config for derived collections (CHUNKED).
+    Should inherit from parent collection's replication settings.
+    
+    Args:
+        client: WeaviateAsyncClient instance from client_manager.connect_to_async_client()
+        parent_collection_name: Name of the parent collection to inherit from
+        
+    Returns:
+        Replication config matching parent or None if parent has no replication
+        
+    Raises:
+        ValueError: If parent collection doesn't exist or config unavailable (fail-fast approach)
+    """
+    try:
+        if not await client.collections.exists(parent_collection_name):
+            raise ValueError(f"Parent collection '{parent_collection_name}' does not exist")
+            
+        collection = client.collections.get(parent_collection_name)
+        collection_config = await collection.config.get()
+        
+        if hasattr(collection_config, 'replication_config') and collection_config.replication_config:
+            return collection_config.replication_config
+        return None  # Parent has no replication config
+    except Exception as e:
+        # Fail fast - if we can't get parent config, raise error
+        raise ValueError(f"Cannot retrieve replication config from parent collection '{parent_collection_name}': {e}")

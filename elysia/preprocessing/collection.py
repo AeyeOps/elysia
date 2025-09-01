@@ -23,7 +23,7 @@ from elysia.preprocessing.prompt_templates import (
 from elysia.util.collection import async_get_collection_data_types
 from elysia.util.async_util import asyncio_run
 from elysia.util.parsing import format_dict_to_serialisable
-from elysia.util.client import ClientManager
+from elysia.util.client import ClientManager, get_system_replication_config
 
 
 class ProcessUpdate:
@@ -640,6 +640,7 @@ async def preprocess_async(
                 metadata_collection = await client.collections.create(
                     f"ELYSIA_METADATA__",
                     vectorizer_config=Configure.Vectorizer.none(),
+                    replication_config=await get_system_replication_config(client),
                     properties=[
                         Property(
                             name="name",

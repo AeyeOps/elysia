@@ -11,7 +11,7 @@ from weaviate.exceptions import WeaviateInvalidInputError
 from weaviate.util import generate_uuid5
 from weaviate.client import WeaviateAsyncClient
 
-from elysia.util.client import ClientManager
+from elysia.util.client import ClientManager, get_derived_replication_config
 from elysia.util.collection import (
     async_get_collection_weaviate_data_types,
 )
@@ -280,6 +280,7 @@ class AsyncCollectionChunker:
                     )
                 ],
                 vector_config=await self.get_vectoriser(content_field, client),
+                replication_config=await get_derived_replication_config(client, self.collection_name),
             )
 
     def generate_uuids(
