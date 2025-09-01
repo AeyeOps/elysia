@@ -139,6 +139,7 @@ async def initialise_user(
 
 
 @router.post("/tree/{user_id}/{conversation_id}")
+@recoverable_endpoint
 async def initialise_tree(
     user_id: str,
     conversation_id: str,

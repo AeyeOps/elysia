@@ -48,7 +48,7 @@ from elysia.tools.text.text import (
 from elysia.tree.util import ForcedTextResponse
 from elysia.util.async_util import asyncio_run
 from elysia.tree.objects import CollectionData, TreeData, Atlas, Environment
-from elysia.util.client import ClientManager
+from elysia.util.client import ClientManager, get_system_replication_config
 from elysia.config import (
     check_base_lm_settings,
     check_complex_lm_settings,
@@ -1998,6 +1998,7 @@ class Tree:
                     inverted_index_config=wc.Configure.inverted_index(
                         index_timestamps=True
                     ),
+                    replication_config=await get_system_replication_config(client),
                     properties=[
                         wc.Property(
                             name="user_id",

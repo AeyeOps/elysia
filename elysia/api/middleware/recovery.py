@@ -27,17 +27,16 @@ def recoverable_endpoint(func):
                 raise HTTPException(401, "Session not initialized")
             elif "not found" in error_str and "collection" in error_str:
                 name = extract_resource_name(str(e))
-                # Filter out internal collection names to prevent leaking implementation details
+                # Filter out internal ELYSIA_ collection names
                 if name and name.startswith("ELYSIA_"):
-                    raise HTTPException(404, "Collection not found")
-                else:
-                    raise HTTPException(404, f"Collection {name} not found" if name else "Collection not found")
+                    name = ""
+                raise HTTPException(404, f"Collection {name} not found" if name else "Collection not found")
             
             raise HTTPException(400, str(e))
             
         except KeyError as e:
             logger.exception(f"KeyError in {func.__name__}: {e}")
-            raise HTTPException(422, f"Missing required field: {str(e).strip('\"')}")
+            raise HTTPException(422, f"Missing required field: {str(e).strip('\"\'')}")
             
         except ConnectionError as e:
             logger.exception(f"ConnectionError in {func.__name__}: {e}")
