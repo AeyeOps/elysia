@@ -20,6 +20,7 @@ from elysia.preprocessing.collection import (
 )
 from elysia.util.return_types import specific_return_types, types_dict, all_return_types
 from elysia.util.client import ClientManager
+from elysia.api.middleware.recovery import recoverable_endpoint
 
 from weaviate.classes.query import Filter
 
@@ -64,6 +65,7 @@ async def mapping_types():
 
 
 @router.get("/{user_id}/list")
+@recoverable_endpoint
 async def collections_list(
     user_id: str, user_manager: UserManager = Depends(get_user_manager)
 ):

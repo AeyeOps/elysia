@@ -24,6 +24,7 @@ from elysia.api.services.tree import TreeManager
 from elysia.api.utils.config import FrontendConfig
 from elysia.api.utils.encryption import encrypt_api_keys, decrypt_api_keys
 from elysia.api.utils.models import models
+from elysia.api.middleware.recovery import recoverable_endpoint
 
 import weaviate.classes.config as wc
 from weaviate.util import generate_uuid5
@@ -93,6 +94,7 @@ async def update_frontend_config(
 
 
 @router.get("/{user_id}")
+@recoverable_endpoint
 async def get_current_user_config(
     user_id: str,
     user_manager: UserManager = Depends(get_user_manager),
@@ -221,6 +223,7 @@ async def load_a_config(
 
 
 @router.post("/{user_id}/new")
+@recoverable_endpoint
 async def new_user_config(
     user_id: str,
     user_manager: UserManager = Depends(get_user_manager),
@@ -312,6 +315,7 @@ def save_frontend_config_to_file(user_id: str, frontend_config: dict):
 
 
 @router.post("/{user_id}/{config_id}")
+@recoverable_endpoint
 async def save_config_user(
     user_id: str,
     config_id: str,
@@ -729,6 +733,7 @@ async def load_config_user(
 
 
 @router.delete("/{user_id}/{config_id}")
+@recoverable_endpoint
 async def delete_config(
     user_id: str,
     config_id: str,
@@ -759,6 +764,7 @@ async def delete_config(
 
 
 @router.get("/{user_id}/list")
+@recoverable_endpoint
 async def list_configs(
     user_id: str,
     user_manager: UserManager = Depends(get_user_manager),

@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 
 from elysia.api.dependencies.common import get_user_manager
 from elysia.api.services.user import UserManager
+from elysia.api.middleware.recovery import recoverable_endpoint
 
 # Logging
 from elysia.api.core.log import logger
@@ -11,6 +12,7 @@ router = APIRouter()
 
 
 @router.get("/{user_id}/saved_trees")
+@recoverable_endpoint
 async def get_saved_trees(
     user_id: str,
     user_manager: UserManager = Depends(get_user_manager),

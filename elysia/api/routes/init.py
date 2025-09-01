@@ -9,6 +9,7 @@ from elysia.api.core.log import logger
 from elysia.util.client import ClientManager
 from elysia.api.utils.config import Config
 from elysia.api.utils.encryption import decrypt_api_keys
+from elysia.api.middleware.recovery import recoverable_endpoint
 
 from weaviate.classes.query import Filter
 
@@ -49,6 +50,7 @@ async def get_default_config(
 
 
 @router.post("/user/{user_id}")
+@recoverable_endpoint
 async def initialise_user(
     user_id: str, user_manager: UserManager = Depends(get_user_manager)
 ):
