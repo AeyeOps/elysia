@@ -43,13 +43,46 @@ pytest --cov=elysia --ignore=tests/requires_env
 ```
 
 ### Installation & Dependencies
+
+#### Using UV (Recommended - 10-100x faster)
+```bash
+# Install package in development mode with all dependencies
+uv sync
+
+# Install with dev dependencies
+uv sync --extra dev
+
+# Install package only (without dev dependencies)  
+uv sync --no-dev
+
+# Add a new dependency
+uv add <package-name>
+
+# Add a development dependency
+uv add --dev <package-name>
+
+# Update dependencies
+uv lock --upgrade
+
+# Create/update lockfile
+uv lock
+
+# Run commands in the project environment
+uv run python -m elysia.api.cli --help
+uv run pytest --ignore=tests/requires_env
+```
+
+#### Legacy pip commands (still supported)
 ```bash
 # Install package in development mode
 pip install -e .
 
 # Install with dev dependencies
 pip install -e ".[dev]"
+```
 
+#### Documentation
+```bash
 # Build documentation
 mkdocs serve  # Local preview at http://127.0.0.1:8000
 mkdocs build  # Build static site

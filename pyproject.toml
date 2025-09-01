@@ -62,3 +62,24 @@ elysia = "elysia.api.cli:cli"
 
 [tool.hatch.build.targets.wheel]
 packages = ["elysia"]
+
+[tool.uv]
+# UV configuration for the Elysia project
+dev-dependencies = []  # We use project.optional-dependencies.dev instead
+package = true  # This is a Python package that should be built and installed
+
+# Python version management
+python-downloads = "automatic"
+
+# Dependency resolution settings
+resolution = "highest"
+
+# Index configuration (defaults to PyPI)
+index-strategy = "first-index"
+
+# Lock file generation
+compile-bytecode = false
+
+# Concurrent operations for performance
+concurrent-downloads = 8
+concurrent-installs = 4
