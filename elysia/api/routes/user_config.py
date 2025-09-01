@@ -149,26 +149,16 @@ async def load_a_config(
         frontend_config = user["frontend_config"]
 
         # check if the user has a valid save location (allow local without API key)
-        if (
-            frontend_config.save_location_wcd_url == ""
-            or (
-                frontend_config.save_location_wcd_api_key == ""
-                and not frontend_config.save_location_weaviate_is_local
-            )
-        ):
-            raise Exception("WCD URL or API key not found.")
-
-        if (
-            frontend_config.save_location_wcd_url == ""
-            or (
-                frontend_config.save_location_wcd_api_key == ""
-                and not frontend_config.save_location_weaviate_is_local
-            )
-        ):
-            raise Exception(
-                "No valid destination for config load location found. "
-                "Please update the save location using the /update_save_location API."
-            )
+        # Check if valid save location exists (allow local without API key)
+        if frontend_config.save_location_weaviate_is_local:
+            if frontend_config.save_location_wcd_url == "":
+                raise Exception("Local Weaviate requires a URL (e.g., http://localhost:8080).")
+        else:
+            if (
+                frontend_config.save_location_wcd_url == ""
+                or frontend_config.save_location_wcd_api_key == ""
+            ):
+                raise Exception("Cloud Weaviate requires both URL and API key.")
 
         # Retrieve the config from the weaviate database
         async with (
@@ -460,19 +450,34 @@ async def save_config_user(
         # storage cluster for configs/conversations is controlled via frontend payload
 
         # Check if the user has a valid save location (allow local without API key)
-        if (
-            user["frontend_config"].save_location_wcd_url == ""
-            or (
-                user["frontend_config"].save_location_wcd_api_key == ""
-                and not user["frontend_config"].save_location_weaviate_is_local
-            )
-        ):
-            warnings.append(
-                "No valid destination for config save location found. "
-                "Config has not been saved to Weaviate. "
-                "Saving to Weaviate requires a Config Storage WCD_URL and WCD_API_KEY."
-            )
+        # For local Weaviate, only URL is required (API key is ignored)
+        has_valid_save_location = False
+        
+        if user["frontend_config"].save_location_weaviate_is_local:
+            # Local mode: only check if URL is provided
+            if user["frontend_config"].save_location_wcd_url == "":
+                warnings.append(
+                    "No valid destination for config save location found. "
+                    "Config has not been saved to Weaviate. "
+                    "Local Weaviate requires a URL (e.g., http://localhost:8080)."
+                )
+            else:
+                has_valid_save_location = True
         else:
+            # Cloud mode: both URL and API key are required
+            if (
+                user["frontend_config"].save_location_wcd_url == ""
+                or user["frontend_config"].save_location_wcd_api_key == ""
+            ):
+                warnings.append(
+                    "No valid destination for config save location found. "
+                    "Config has not been saved to Weaviate. "
+                    "Saving to Weaviate Cloud requires both WCD_URL and WCD_API_KEY."
+                )
+            else:
+                has_valid_save_location = True
+        
+        if has_valid_save_location:
 
             settings_dict = encrypt_api_keys(settings_dict)
 
@@ -645,20 +650,32 @@ async def load_config_user(
     try:
 
         # check if the user has a valid save location
-        if (
-            frontend_config.save_location_wcd_url == ""
-            or frontend_config.save_location_wcd_api_key == ""
-        ):
-            raise Exception("WCD URL or API key not found.")
+        if frontend_config.save_location_weaviate_is_local:
+            if frontend_config.save_location_wcd_url == "":
+                raise Exception("Local Weaviate requires a URL (e.g., http://localhost:8080).")
+        else:
+            if (
+                frontend_config.save_location_wcd_url == ""
+                or frontend_config.save_location_wcd_api_key == ""
+            ):
+                raise Exception("Cloud Weaviate requires both URL and API key.")
 
-        if (
-            frontend_config.save_location_wcd_url == ""
-            or frontend_config.save_location_wcd_api_key == ""
-        ):
-            raise Exception(
-                "No valid destination for config load location found. "
-                "Please update the save location using the /update_save_location API."
-            )
+        # Check again for load location (same logic as save)
+        if frontend_config.save_location_weaviate_is_local:
+            if frontend_config.save_location_wcd_url == "":
+                raise Exception(
+                    "No valid destination for config load location found. "
+                    "Local Weaviate requires a URL."
+                )
+        else:
+            if (
+                frontend_config.save_location_wcd_url == ""
+                or frontend_config.save_location_wcd_api_key == ""
+            ):
+                raise Exception(
+                    "No valid destination for config load location found. "
+                    "Cloud Weaviate requires both URL and API key."
+                )
 
         # Retrieve the config from the weaviate database
         async with (

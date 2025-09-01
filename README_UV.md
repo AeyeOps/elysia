@@ -22,6 +22,7 @@ uv run elysia start  # Run the application
 | `uv sync` | `pip install -e .` | Install package in development mode |
 | `uv sync --extra dev` | `pip install -e ".[dev]"` | Install with dev dependencies |
 | `uv sync --no-dev` | `pip install .` | Install without dev dependencies |
+| `uv build && uv pip install --system dist/*.whl` | `pip install .` | Build and install system-wide (creates `elysia` command) |
 | `uv add <package>` | Edit pyproject.toml + `pip install -e .` | Add and install a new dependency |
 | `uv add --dev <package>` | Edit pyproject.toml + `pip install -e ".[dev]"` | Add and install a dev dependency |
 | `uv remove <package>` | Edit pyproject.toml + `pip install -e .` | Remove a dependency |

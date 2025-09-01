@@ -207,3 +207,40 @@ uv run pytest --ignore=tests/requires_env
 ```
 
 This replaces the previous multi-step pip-based setup process.
+
+## Building Deployable Binary
+
+### Option 1: UV Build and System Installation (Recommended)
+
+To create a deployable package that installs the `elysia` command system-wide:
+
+```bash
+# 1. Navigate to Elysia directory
+cd /opt/elysia
+
+# 2. Build the package (creates wheel and tar.gz)
+uv build
+# This creates:
+#   - dist/elysia_ai-0.2.dev1-py3-none-any.whl
+#   - dist/elysia_ai-0.2.dev1.tar.gz
+
+# 3. Install system-wide (makes 'elysia' command available)
+uv pip install --system dist/elysia_ai-0.2.dev1-py3-none-any.whl
+
+# 4. Verify installation
+elysia --help
+elysia start --port 8000 --host 0.0.0.0
+```
+
+This approach:
+- Creates a standard Python wheel that can be distributed
+- Installs the `elysia` command in the system Python environment
+- Works seamlessly with conda environments
+- Maintains all dependencies properly
+- Can be deployed to PyPI or private package repositories
+
+For production deployment, the wheel file can be:
+- Uploaded to PyPI: `uv publish`
+- Hosted on a private package server
+- Distributed directly to servers
+- Installed via `pip` or `uv` on target systems

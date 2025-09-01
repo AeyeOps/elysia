@@ -180,13 +180,14 @@ class UserManager:
                 local_weaviate_grpc_port=self.users[user_id]["tree_manager"].config.settings.LOCAL_WEAVIATE_GRPC_PORT,
             )
 
-    async def get_user_local(self, user_id: str):
+    async def get_user_local(self, user_id: str, auto_create: bool = True):
         """
         Return a local user object.
-        Will raise a ValueError if the user is not found.
+        Will auto-create the user if not found (unless auto_create=False).
 
         Args:
             user_id (str): Required. The unique identifier for the user.
+            auto_create (bool): Optional. Whether to auto-create the user if not found. Defaults to True.
 
         Returns:
             (dict): A local user object, containing a TreeManager ("tree_manager"),
@@ -194,9 +195,13 @@ class UserManager:
         """
 
         if user_id not in self.users:
-            raise ValueError(
-                f"User {user_id} not found. Please initialise a user first (by calling `add_user_local`)."
-            )
+            if auto_create:
+                logger.info(f"Auto-creating user {user_id}")
+                await self.add_user_local(user_id)
+            else:
+                raise ValueError(
+                    f"User {user_id} not found. Please initialise a user first (by calling `add_user_local`)."
+                )
 
         # update last request (adds last_request to user)
         await self.update_user_last_request(user_id)

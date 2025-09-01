@@ -195,6 +195,34 @@ class FrontendConfig:
         if "save_location_wcd_url" in kwargs:
             self.save_location_wcd_url = kwargs["save_location_wcd_url"]
             reload_client_manager = True
+            
+            # Auto-detect local Weaviate based on URL
+            # Only override if not explicitly provided
+            if "save_location_weaviate_is_local" not in kwargs:
+                url_lower = self.save_location_wcd_url.lower()
+                if any(local_indicator in url_lower for local_indicator in 
+                       ["localhost", "127.0.0.1", "0.0.0.0", "host.docker.internal"]):
+                    self.save_location_weaviate_is_local = True
+                    self.logger.info(f"Auto-detected local Weaviate from URL: {self.save_location_wcd_url}")
+                    
+                    # Also extract port from URL if not explicitly provided
+                    if "save_location_local_weaviate_port" not in kwargs:
+                        from urllib.parse import urlparse
+                        try:
+                            parsed = urlparse(self.save_location_wcd_url)
+                            if parsed.port:
+                                self.save_location_local_weaviate_port = parsed.port
+                                # Calculate gRPC port offset if not provided
+                                if "save_location_local_weaviate_grpc_port" not in kwargs:
+                                    # Standard offset: HTTP 8080 -> gRPC 50051 (difference of 41971)
+                                    grpc_offset = 50051 - 8080
+                                    self.save_location_local_weaviate_grpc_port = parsed.port + grpc_offset
+                                self.logger.info(f"Extracted ports - HTTP: {self.save_location_local_weaviate_port}, gRPC: {self.save_location_local_weaviate_grpc_port}")
+                        except Exception as e:
+                            self.logger.warning(f"Could not extract port from URL: {e}")
+                else:
+                    self.save_location_weaviate_is_local = False
+                    
         if "save_location_wcd_api_key" in kwargs:
             self.save_location_wcd_api_key = kwargs["save_location_wcd_api_key"]
             reload_client_manager = True

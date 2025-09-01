@@ -175,10 +175,10 @@ class ClientManager:
                     "WCD_URL is not set. "
                     "All Weaviate functionality will be disabled."
                 )
-            elif self.wcd_api_key == "":
+            elif self.wcd_api_key == "" and not self.weaviate_is_local:
                 self.logger.warning(
-                    "WCD_API_KEY is not set. "
-                    "All Weaviate functionality will be disabled."
+                    "WCD_API_KEY is not set and not in local mode. "
+                    "Weaviate functionality will be disabled."
                 )
             else:
                 self.logger.debug(
@@ -343,12 +343,24 @@ class ClientManager:
         self.last_used_async_client = datetime.datetime.now()
 
     def get_client(self) -> WeaviateClient:
+        # Auto-detect local Weaviate if URL suggests it
+        is_local = self.weaviate_is_local
+        if not is_local and self.wcd_url:
+            url_lower = self.wcd_url.lower()
+            if any(local_indicator in url_lower for local_indicator in 
+                   ["localhost", "127.0.0.1", "0.0.0.0", "host.docker.internal"]):
+                is_local = True
+                if self.logger:
+                    self.logger.info(f"Auto-detected local Weaviate from URL: {self.wcd_url}")
+        
         if self.logger:
             self.logger.info(
                 f"get_client called: weaviate_is_local={self.weaviate_is_local}, "
+                f"auto_detected_local={is_local}, "
                 f"wcd_url={self.wcd_url}, wcd_url_is_none={self.wcd_url is None}"
             )
-        if self.weaviate_is_local and self.wcd_url is not None:
+        
+        if is_local and self.wcd_url is not None:
             # For local mode with anonymous access, don't pass auth_credentials
             auth_credentials = None
             host, port = self._get_local_host_and_port()
@@ -367,12 +379,12 @@ class ClientManager:
                 skip_init_checks=True,
             )
 
-        if not self.weaviate_is_local and (self.wcd_url is None or self.wcd_api_key is None):
-            raise ValueError("WCD_URL and WCD_API_KEY must be set")
+        if not is_local and (self.wcd_url is None or self.wcd_api_key is None):
+            raise ValueError("WCD_URL and WCD_API_KEY must be set for cloud connections")
 
         if self.logger:
-            self.logger.warning(
-                f"Using CLOUD connection (not local) with url: {self.wcd_url}"
+            self.logger.info(
+                f"Using CLOUD connection with url: {self.wcd_url}"
             )
         return weaviate.connect_to_weaviate_cloud(
             cluster_url=self.wcd_url,
@@ -382,7 +394,17 @@ class ClientManager:
         )
 
     async def get_async_client(self) -> WeaviateAsyncClient:
-        if self.weaviate_is_local and self.wcd_url is not None:
+        # Auto-detect local Weaviate if URL suggests it
+        is_local = self.weaviate_is_local
+        if not is_local and self.wcd_url:
+            url_lower = self.wcd_url.lower()
+            if any(local_indicator in url_lower for local_indicator in 
+                   ["localhost", "127.0.0.1", "0.0.0.0", "host.docker.internal"]):
+                is_local = True
+                if self.logger:
+                    self.logger.info(f"Auto-detected local Weaviate from URL (async): {self.wcd_url}")
+        
+        if is_local and self.wcd_url is not None:
             # For local mode with anonymous access, don't pass auth_credentials
             auth_credentials = None
             host, port = self._get_local_host_and_port()
@@ -390,6 +412,7 @@ class ClientManager:
             if self.logger:
                 self.logger.info(
                     f"Getting async client with weaviate_is_local: {self.weaviate_is_local}, "
+                    f"auto_detected_local: {is_local}, "
                     f"wcd_url: {self.wcd_url}, parsed_host: {host}, api_key_set: {self.wcd_api_key != ''}, "
                     f"http_port: {port}, grpc_port: {grpc_port}"
                 )
@@ -402,8 +425,8 @@ class ClientManager:
                 skip_init_checks=True,
             )
 
-        if not self.weaviate_is_local and (self.wcd_url is None or self.wcd_api_key is None):
-            raise ValueError("WCD_URL and WCD_API_KEY must be set")
+        if not is_local and (self.wcd_url is None or self.wcd_api_key is None):
+            raise ValueError("WCD_URL and WCD_API_KEY must be set for cloud connections")
 
         return weaviate.use_async_with_weaviate_cloud(
             cluster_url=self.wcd_url,
