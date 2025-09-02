@@ -10,11 +10,23 @@ A pragmatic, phased approach to validate dynamic replication using the existing 
 - **Fail fast** - Find critical issues early before investing in complex scenarios
 - **Observable validation** - Use clear, visual confirmations where possible
 
+## Prerequisites
+
+Before executing the testing waves, ensure the following are in place:
+
+1. **3-node local Weaviate cluster**: Docker containers running on ports 8080/8081/8082 (via docker-compose.test.yml)
+2. **Main spec fixes implemented**: ClientManager API key validation logic, hardcoded ports in user.py
+3. **Elysia local configuration**: .env with WEAVIATE_IS_LOCAL=true, WCD_URL=http://localhost:8080
+4. **Functional Elysia API**: /init, /collections endpoints working for collection and data generation
+5. **Test scripts prepared**: Python ClientManager scripts for cluster detection and operations
+6. **Docker environment**: Commands for container management (stop/start/logs/stats)
+7. **API testing tools**: curl and jq installed for verification commands
+
+*Note: Setting up missing prerequisites may take 2-4 hours*
+
+---
+
 ## Current Environment
-- **Cluster**: 3-node local Weaviate (ports 8080, 8081, 8082)
-- **System Collections**: CONFIG, FEEDBACK, METADATA
-- **Derived Collections**: CHUNKED_*
-- **Expected Behavior**: System collections replicate to all 3 nodes
 
 ---
 

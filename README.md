@@ -15,7 +15,7 @@ Installation is as simple as:
 pip install elysia-ai
 ```
 
-> **🚀 Using UV?** We've retrofitted Elysia with [UV](https://github.com/astral-sh/uv) for 10-100x faster package management! See our [UV Guide](./readmeUV.md) for blazing-fast installation and dependency management while maintaining full backward compatibility.
+> **🚀 Using UV?** We've retrofitted Elysia with [UV](https://github.com/astral-sh/uv) for 10-100x faster package management! See our [UV Guide](./README_UV.md) for blazing-fast installation and dependency management while maintaining full backward compatibility.
 
 ## Get started (App)
 

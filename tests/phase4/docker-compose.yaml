@@ -1,0 +1,115 @@
+
+services:
+  test-node1:
+    image: cr.weaviate.io/semitechnologies/weaviate:1.32.4
+    networks:
+      - test-weaviate-network
+    env_file: .env
+    command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
+    ports:
+      - "18080:8080"
+      - "15051:50051"
+      - "17100:7100"          # gossip port unique per node
+    volumes:
+      - test_weaviate_data_node1:/var/lib/weaviate
+    restart: unless-stopped
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      ENABLE_API_BASED_MODULES: 'true'
+      ENABLE_MODULES: 'text2vec-openai,text2vec-google,generative-openai,generative-google,generative-anthropic,text2vec-ollama,generative-ollama'
+      OPENAI_APIKEY: ${OPENAI_API_KEY}
+      GOOGLE_APIKEY: ${GOOGLE_API_KEY}
+      ANTHROPIC_APIKEY: ${ANTHROPIC_API_KEY}
+      CLUSTER_HOSTNAME: 'test-node1'
+      CLUSTER_GOSSIP_BIND_PORT: 7100
+      CLUSTER_DATA_BIND_PORT: 7101
+      RAFT_JOIN: 'test-node1,test-node2,test-node3'
+      RAFT_BOOTSTRAP_EXPECT: 3
+
+  test-node2:
+    image: cr.weaviate.io/semitechnologies/weaviate:1.32.4
+    networks:
+      - test-weaviate-network
+    env_file: .env
+    command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
+    ports:
+      - "18081:8080"
+      - "15052:50051"
+      - "17101:7100"          # gossip port unique per node
+    volumes:
+      - test_weaviate_data_node2:/var/lib/weaviate
+    restart: unless-stopped
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      ENABLE_API_BASED_MODULES: 'true'
+      ENABLE_MODULES: 'text2vec-openai,text2vec-google,generative-openai,generative-google,generative-anthropic,text2vec-ollama,generative-ollama'
+      OPENAI_APIKEY: ${OPENAI_API_KEY}
+      GOOGLE_APIKEY: ${GOOGLE_API_KEY}
+      ANTHROPIC_APIKEY: ${ANTHROPIC_API_KEY}
+      CLUSTER_HOSTNAME: 'test-node2'
+      CLUSTER_GOSSIP_BIND_PORT: 7100
+      CLUSTER_DATA_BIND_PORT: 7101
+      RAFT_JOIN: 'test-node1,test-node2,test-node3'
+      RAFT_BOOTSTRAP_EXPECT: 3
+      CLUSTER_JOIN: 'test-node1:7100'
+
+  test-node3:
+    image: cr.weaviate.io/semitechnologies/weaviate:1.32.4
+    networks:
+      - test-weaviate-network
+    env_file: .env
+    command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
+    ports:
+      - "18082:8080"
+      - "15053:50051"
+      - "17102:7100"          # gossip port unique per node
+    volumes:
+      - test_weaviate_data_node3:/var/lib/weaviate
+    restart: unless-stopped
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      ENABLE_API_BASED_MODULES: 'true'
+      ENABLE_MODULES: 'text2vec-openai,text2vec-google,generative-openai,generative-google,generative-anthropic,text2vec-ollama,generative-ollama'
+      OPENAI_APIKEY: ${OPENAI_API_KEY}
+      GOOGLE_APIKEY: ${GOOGLE_API_KEY}
+      ANTHROPIC_APIKEY: ${ANTHROPIC_API_KEY}
+      CLUSTER_HOSTNAME: 'test-node3'
+      CLUSTER_GOSSIP_BIND_PORT: 7100
+      CLUSTER_DATA_BIND_PORT: 7101
+      RAFT_JOIN: 'test-node1,test-node2,test-node3'
+      RAFT_BOOTSTRAP_EXPECT: 3
+      CLUSTER_JOIN: 'test-node1:7100'
+
+volumes:
+  test_weaviate_data_node1:
+  test_weaviate_data_node2:
+  test_weaviate_data_node3:
+
+networks:
+  test-weaviate-network:
+    driver: bridge
+    name: test-weaviate-cluster-network

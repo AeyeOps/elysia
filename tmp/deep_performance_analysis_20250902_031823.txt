@@ -1,0 +1,75 @@
+
+=== ELYSIA PREPROCESSING DEEP PERFORMANCE ANALYSIS ===
+Generated: 2025-09-02T03:18:23.276871
+
+EXECUTIVE SUMMARY:
+
+CRITICAL ISSUES IDENTIFIED: 1
+  🔴 CRITICAL: Database queries can be 15.0x faster
+
+DETAILED PERFORMANCE BREAKDOWN:
+
+1. SPACY TEXT PROCESSING:
+   🟢  small: 0.0043s (1401 tokens/sec)
+   🟡 medium: 0.0132s (6056 tokens/sec)
+   🟡  large: 0.0954s (7861 tokens/sec)
+   🔴 xlarge: 0.2955s (8799 tokens/sec)
+
+2. LIST OPERATIONS EFFICIENCY:
+   Current approach: 0.0007s
+   Optimized approach: 0.0007s
+   Potential speedup: 1.12x
+   Time per object: 0.000001s
+
+3. MEMORY USAGE PATTERNS:
+   Total memory for output: 0.0MB
+   Memory per field: 0.00MB
+   Output dictionary size: 0.0MB
+
+4. DATABASE QUERY PERFORMANCE:
+   Current query time: 0.30s
+   Optimized query time: 0.02s
+   Potential improvement: 15.03x
+   Queries that could be saved: 38
+
+5. COMPUTATIONAL COMPLEXITY:
+   Complexity assessment: O(n) - Good
+   Performance scales as: 0.30
+
+OPTIMIZATION RECOMMENDATIONS (Priority Order):
+
+1. [HIGH] Individual database queries per field
+   Solution: Implement batch aggregate queries
+   Expected improvement: 15.0x faster database operations
+   Implementation: Modify _evaluate_field_statistics to batch queries
+
+SPECIFIC CODE OPTIMIZATIONS:
+
+1. REPLACE INEFFICIENT LOOPS (Lines 192-194):
+   Current:
+   ```python
+   lengths = []
+   for obj in sample_objects:
+       if property in obj and isinstance(obj[property], str):
+           lengths.append(len(nlp(obj[property])))
+   ```
+   
+   Optimized:
+   ```python
+   lengths = [len(nlp(obj[property])) for obj in sample_objects 
+             if property in obj and isinstance(obj[property], str)]
+   ```
+
+2. BATCH DATABASE QUERIES (Lines 117-119):
+   Current: Individual aggregate calls per field
+   Optimized: Single batch call for all fields
+   
+3. IMPLEMENT MEMORY-EFFICIENT PROCESSING:
+   Process collections in chunks of 1000 objects maximum
+   Use generators instead of building large dictionaries in memory
+
+PERFORMANCE TARGETS FOR IMPLEMENTATION:
+   - Text processing: <0.01s per object
+   - Memory usage: <50MB for 1000 field collection
+   - Database queries: <2s for 50 fields
+   - Total preprocessing: <30s for 10,000 object collection

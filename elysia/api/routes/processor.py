@@ -18,6 +18,7 @@ from elysia.api.utils.websocket import help_websocket
 
 # Preprocessing
 from elysia.preprocessing.collection import preprocess_async
+from elysia.api.utils.validation import validate_collection_name
 
 router = APIRouter()
 
@@ -28,6 +29,9 @@ async def process_collection(
     logger.debug(f"/process_collection API request received")
     logger.debug(f"User ID: {data['user_id']}")
     logger.debug(f"Collection name: {data['collection_name']}")
+
+    # Validate collection name doesn't use reserved namespace
+    validate_collection_name(data["collection_name"])
 
     user = await user_manager.get_user_local(data["user_id"])
     settings = user["tree_manager"].settings

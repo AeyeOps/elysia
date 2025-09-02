@@ -11,6 +11,7 @@ from weaviate.classes.config import Configure, Property, DataType, Tokenization
 
 from elysia.config import nlp, Settings, load_base_lm, ElysiaKeyManager
 from elysia.config import settings as environment_settings
+from elysia.api.utils.validation import validate_collection_name
 
 from elysia.util import return_types as rt
 
@@ -24,6 +25,7 @@ from elysia.util.collection import async_get_collection_data_types
 from elysia.util.async_util import asyncio_run
 from elysia.util.parsing import format_dict_to_serialisable
 from elysia.util.client import ClientManager, get_system_replication_config
+from fastapi import HTTPException
 
 
 class ProcessUpdate:
@@ -402,6 +404,11 @@ async def preprocess_async(
     Returns:
         AsyncGenerator[dict, None]: A generator that yields dictionaries with the status updates and progress of the preprocessor.
     """
+    # Validate collection name doesn't use reserved namespace
+    try:
+        validate_collection_name(collection_name)
+    except HTTPException as e:
+        raise ValueError(e.detail)
 
     collection_summariser_prompt = dspy.ChainOfThought(CollectionSummariserPrompt)
     return_type_prompt = dspy.ChainOfThought(ReturnTypePrompt)
@@ -903,6 +910,17 @@ def preprocess(
         settings (Settings): The settings to use. Optional, defaults to the environment variables/configured settings.
         force (bool): Whether to force the preprocessor to run even if the collection already exists. Optional, defaults to False.
     """
+    # Validate collection names don't use reserved namespace
+    if isinstance(collection_names, str):
+        collection_names_list = [collection_names]
+    else:
+        collection_names_list = collection_names
+    
+    for collection_name in collection_names_list:
+        try:
+            validate_collection_name(collection_name)
+        except HTTPException as e:
+            raise ValueError(e.detail)
 
     asyncio_run(
         _preprocess_async(

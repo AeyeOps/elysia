@@ -1,0 +1,33 @@
+warning: `VIRTUAL_ENV=/opt/weaviate/elysiactl/.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+============================= test session starts ==============================
+platform linux -- Python 3.12.9, pytest-8.4.1, pluggy-1.6.0 -- /home/steve/miniforge3/bin/python
+cachedir: .pytest_cache
+rootdir: /opt/elysia
+configfile: pyproject.toml
+plugins: Faker-37.4.0, cov-5.0.0, asyncio-1.1.0, anyio-4.10.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 6 items
+
+tests/api/utils/test_validation.py::test_validate_collection_name_rejects_elysia_prefix PASSED [ 16%]
+tests/api/utils/test_validation.py::test_validate_collection_name_case_insensitive PASSED [ 33%]
+tests/api/utils/test_validation.py::test_validate_collection_name_rejects_system_prefix PASSED [ 50%]
+tests/api/utils/test_validation.py::test_validate_collection_name_accepts_valid_names PASSED [ 66%]
+tests/api/utils/test_validation.py::test_validate_collection_name_empty PASSED [ 83%]
+tests/api/utils/test_validation.py::test_validate_collection_name_too_long PASSED [100%]
+
+=============================== warnings summary ===============================
+../../home/steve/miniforge3/lib/python3.12/site-packages/spacy/cli/_util.py:23
+  /home/steve/miniforge3/lib/python3.12/site-packages/spacy/cli/_util.py:23: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.
+    from click.parser import split_arg_string
+
+../../home/steve/miniforge3/lib/python3.12/site-packages/weasel/util/config.py:8
+  /home/steve/miniforge3/lib/python3.12/site-packages/weasel/util/config.py:8: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.
+    from click.parser import split_arg_string
+
+tests/api/utils/test_validation.py::test_validate_collection_name_rejects_elysia_prefix
+  /home/steve/miniforge3/lib/python3.12/site-packages/_pytest/fixtures.py:1181: PytestRemovedIn9Warning: '' requested an async fixture 'cleanup_clients' with autouse=True, with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+  See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 6 passed, 3 warnings in 0.08s =========================
