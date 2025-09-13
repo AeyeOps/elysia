@@ -5,7 +5,7 @@ SUCCESS CRITERIA CHECKLIST:
 
 [✓] Validation utility created with namespace checking
     - File exists: /opt/elysia/elysia/api/utils/validation.py
-    - Contains RESERVED_PREFIXES = ["ELYSIA_", "SYSTEM_"]
+    - Contains RESERVED_PREFIXES = ["ELYSIACTL_", "SYSTEM_"]
     - validate_collection_name function implemented
 
 [✓] Preprocessing functions validate collection names  
@@ -17,15 +17,15 @@ SUCCESS CRITERIA CHECKLIST:
     - Integrated into preprocessing which is the main user entry point
 
 [✓] Case-insensitive validation works correctly
-    - Tested: ELYSIA_test, elysia_test, Elysia_Test all rejected
+    - Tested: ELYSIACTL_test, elysia_test, Elysia_Test all rejected
     - Exit code 0 with proper 400 status
 
-[✓] System can still create ELYSIA_ collections
-    - ELYSIA_CONFIG__ exists and accessible
+[✓] System can still create ELYSIACTL_ collections
+    - ELYSIACTL_CONFIG__ exists and accessible
     - No validation on system code paths
 
 [✓] Clear, friendly error messages for users
-    - Message: "Collection names starting with 'ELYSIA_' are reserved for system use. Please choose a different name for your collection."
+    - Message: "Collection names starting with 'ELYSIACTL_' are reserved for system use. Please choose a different name for your collection."
 
 [✓] All tests pass
     - 6/6 unit tests passed

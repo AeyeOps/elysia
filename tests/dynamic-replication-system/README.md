@@ -26,7 +26,7 @@ dynamic-replication-system/
 
 **Key Tests**:
 - `cluster_check.py` - Verify 3 healthy Weaviate nodes
-- `create_system_collections.py` - Create ELYSIA_* collections with replication_factor=3
+- `create_system_collections.py` - Create ELYSIACTL_* collections with replication_factor=3
 - `verify_replication.py` - Test data sync across nodes
 - `test_derived_collections.py` - Validate replication inheritance
 

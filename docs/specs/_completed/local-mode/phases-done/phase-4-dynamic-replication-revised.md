@@ -8,12 +8,12 @@ Fix replication configurations with surgical precision, distinguishing between s
 ### System Collections (MUST replicate to all nodes)
 These are infrastructure collections required for system operation:
 
-1. **ELYSIA_CONFIG__** - User configurations (critical for consistency)
-2. **ELYSIA_FEEDBACK__** - System feedback (user experience data)
-3. **ELYSIA_METADATA__** - Collection metadata (preprocessing results)
+1. **ELYSIACTL_CONFIG__** - User configurations (critical for consistency)
+2. **ELYSIACTL_FEEDBACK__** - System feedback (user experience data)
+3. **ELYSIACTL_METADATA__** - Collection metadata (preprocessing results)
 
 ### Derived Collections (inherit from parent)
-4. **ELYSIA_CHUNKED_<collection>__** - Should inherit parent collection's replication
+4. **ELYSIACTL_CHUNKED_<collection>__** - Should inherit parent collection's replication
 
 ### User Collections (DO NOT TOUCH)
 - `tree.py:1995` creates user export collections - these are user-controlled, not system
@@ -51,7 +51,7 @@ async def get_system_replication_config(client):
 async def get_inherited_replication_config(client, parent_collection_name):
     """
     Get replication config by inheriting from parent collection.
-    Used for derived collections like ELYSIA_CHUNKED_*.
+    Used for derived collections like ELYSIACTL_CHUNKED_*.
     
     Returns:
         Replication config matching parent, or system config as fallback
@@ -70,7 +70,7 @@ async def get_inherited_replication_config(client, parent_collection_name):
 
 ### Step 2: Fix System Collections
 
-#### 2.1: ELYSIA_CONFIG__ (user_config.py)
+#### 2.1: ELYSIACTL_CONFIG__ (user_config.py)
 **File:** `/opt/elysia/elysia/api/routes/user_config.py`
 **Lines:** 491-493
 
@@ -89,21 +89,21 @@ replication_config=await get_system_replication_config(client)
 from elysia.util.replication import get_system_replication_config
 ```
 
-#### 2.2: ELYSIA_FEEDBACK__ (feedback.py)
+#### 2.2: ELYSIACTL_FEEDBACK__ (feedback.py)
 **File:** `/opt/elysia/elysia/api/utils/feedback.py`
 **Line:** 18
 
 **Current:**
 ```python
 await client.collections.create(
-    "ELYSIA_FEEDBACK__",
+    "ELYSIACTL_FEEDBACK__",
     properties=[
 ```
 
 **Replace with:**
 ```python
 await client.collections.create(
-    "ELYSIA_FEEDBACK__",
+    "ELYSIACTL_FEEDBACK__",
     replication_config=await get_system_replication_config(client),
     properties=[
 ```
@@ -113,14 +113,14 @@ await client.collections.create(
 from elysia.util.replication import get_system_replication_config
 ```
 
-#### 2.3: ELYSIA_METADATA__ (collection.py)
+#### 2.3: ELYSIACTL_METADATA__ (collection.py)
 **File:** `/opt/elysia/elysia/preprocessing/collection.py`
 **Line:** 640
 
 **Current:**
 ```python
 metadata_collection = await client.collections.create(
-    f"ELYSIA_METADATA__",
+    f"ELYSIACTL_METADATA__",
     vectorizer_config=Configure.Vectorizer.none(),
     properties=[
 ```
@@ -128,7 +128,7 @@ metadata_collection = await client.collections.create(
 **Replace with:**
 ```python
 metadata_collection = await client.collections.create(
-    f"ELYSIA_METADATA__",
+    f"ELYSIACTL_METADATA__",
     vectorizer_config=Configure.Vectorizer.none(),
     replication_config=await get_system_replication_config(client),
     properties=[
@@ -141,7 +141,7 @@ from elysia.util.replication import get_system_replication_config
 
 ### Step 3: Fix Derived Collections
 
-#### 3.1: ELYSIA_CHUNKED_* (chunk.py)
+#### 3.1: ELYSIACTL_CHUNKED_* (chunk.py)
 **File:** `/opt/elysia/elysia/tools/retrieval/chunk.py`
 **Line:** 268
 

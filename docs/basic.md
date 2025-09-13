@@ -71,7 +71,7 @@ print(objects)
             'issue_updated_at': '2025-02-27T10:38:02Z',
             'issue_state': 'closed',
             'uuid': 'bc56b4b2fc6a541c94969721bd895a7c',
-            'ELYSIA_SUMMARY': ''
+            'ELYSIACTL_SUMMARY': ''
         },
     ...
         {
@@ -86,7 +86,7 @@ print(objects)
             'issue_updated_at': '2025-01-15T11:06:08Z',
             'issue_state': 'closed',
             'uuid': '05dae4214e9050a59d4e9985892cdc10',
-            'ELYSIA_SUMMARY': ''
+            'ELYSIACTL_SUMMARY': ''
         }
     ]
 ]

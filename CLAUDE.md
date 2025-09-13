@@ -118,7 +118,7 @@ Elysia is an agentic framework that uses decision trees to orchestrate tool usag
 
 **Preprocessing (`elysia/preprocessing/`)**
 - Collection analysis and metadata extraction for Weaviate data
-- Creates `ELYSIA_` prefixed collections for storing preprocessing results
+- Creates `ELYSIACTL_` prefixed collections for storing preprocessing results
 - Required before collections can be queried through the tree
 
 ### Key Design Patterns

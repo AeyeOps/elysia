@@ -122,12 +122,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Configuration Issues
 - Replaced hardcoded Weaviate ports throughout codebase
-- Fixed replication factor for ELYSIA_CONFIG collections in multi-node setups
+- Fixed replication factor for ELYSIACTL_CONFIG collections in multi-node setups
 - Resolved frontend configuration override issues
 
 ### Security
 
-- Internal collection names (ELYSIA_*) are filtered from client error messages
+- Internal collection names (ELYSIACTL_*) are filtered from client error messages
 - Full exception details logged server-side while exposing only safe messages to clients
 - Established reserved namespace convention for system collections
 - Prevented leakage of implementation details through error responses

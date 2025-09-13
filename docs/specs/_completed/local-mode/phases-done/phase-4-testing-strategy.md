@@ -76,7 +76,7 @@ async def create_and_verify():
 
 # Human: Check via Weaviate API
 curl http://localhost:8080/v1/schema | jq '.classes[] | 
-  select(.class | startswith("ELYSIA_")) | 
+  select(.class | startswith("ELYSIACTL_")) | 
   {class: .class, replication: .replicationConfig}'
 
 # Expected: All show "factor": 3
@@ -89,9 +89,9 @@ curl http://localhost:8080/v1/schema | jq '.classes[] |
 # Connect to localhost:8080 and insert test config
 
 # Human: Verify data readable from all nodes
-curl http://localhost:8080/v1/objects?class=ELYSIA_CONFIG__  # Should work
-curl http://localhost:8081/v1/objects?class=ELYSIA_CONFIG__  # Should work
-curl http://localhost:8082/v1/objects?class=ELYSIA_CONFIG__  # Should work
+curl http://localhost:8080/v1/objects?class=ELYSIACTL_CONFIG__  # Should work
+curl http://localhost:8081/v1/objects?class=ELYSIACTL_CONFIG__  # Should work
+curl http://localhost:8082/v1/objects?class=ELYSIACTL_CONFIG__  # Should work
 ```
 
 ### Test 1.4: Derived Collection Inheritance
@@ -381,7 +381,7 @@ curl http://localhost:8080/v1/nodes | jq '.'
 ### View Collection Replication
 ```bash
 curl http://localhost:8080/v1/schema | jq '.classes[] | 
-  select(.class | startswith("ELYSIA_")) | 
+  select(.class | startswith("ELYSIACTL_")) | 
   {class: .class, factor: .replicationConfig.factor}'
 ```
 
@@ -389,7 +389,7 @@ curl http://localhost:8080/v1/schema | jq '.classes[] |
 ```bash
 for port in 8080 8081 8082; do
   echo "Node $port:"
-  curl -s http://localhost:$port/v1/objects?class=ELYSIA_CONFIG__ | jq '.objects | length'
+  curl -s http://localhost:$port/v1/objects?class=ELYSIACTL_CONFIG__ | jq '.objects | length'
 done
 ```
 

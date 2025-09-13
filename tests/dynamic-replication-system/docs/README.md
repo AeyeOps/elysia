@@ -33,7 +33,7 @@ Wave 1 validates that dynamic replication works correctly under normal condition
 | Script | Purpose | Success Criteria |
 |--------|---------|------------------|
 | `cluster_check.py` | Verify 3 healthy Weaviate nodes | All nodes respond to `/v1/meta` |
-| `create_system_collections.py` | Create ELYSIA_* collections with replication_factor=3 | Collections created successfully |
+| `create_system_collections.py` | Create ELYSIACTL_* collections with replication_factor=3 | Collections created successfully |
 | `verify_replication.py` | Test data sync across nodes | Data written to node 1 readable from all nodes |
 | `test_derived_collections.py` | Validate replication inheritance | Derived collections inherit parent's replication settings |
 

@@ -9,7 +9,7 @@ This document summarizes the comprehensive Dynamic Replication System testing an
 ### Core Components
 - **3-Node Weaviate Cluster**: Local Docker-based cluster (ports 18080, 18081, 18082)
 - **Dynamic Replication**: Automatic data synchronization across nodes
-- **System Collections**: ELYSIA_* prefixed collections with configurable replication factors
+- **System Collections**: ELYSIACTL_* prefixed collections with configurable replication factors
 - **Real-time Monitoring**: Cluster health, performance metrics, and error tracking
 
 ### Key Features
@@ -34,7 +34,7 @@ This document summarizes the comprehensive Dynamic Replication System testing an
 
 **Files**: `waves/wave1/`
 - `cluster_check.py` - Node health verification
-- `create_system_collections.py` - ELYSIA_* collection setup
+- `create_system_collections.py` - ELYSIACTL_* collection setup
 - `verify_replication.py` - Data sync validation
 - `test_derived_collections.py` - Inheritance testing
 

@@ -11,7 +11,7 @@ Spec: /opt/elysia/docs/specs/local-mode/phases-done/phase-6-namespace-protection
 1. ✅ validation.py created correctly
    - Location: /opt/elysia/elysia/api/utils/validation.py
    - Code matches spec exactly
-   - Includes ELYSIA_ and SYSTEM_ prefix blocking
+   - Includes ELYSIACTL_ and SYSTEM_ prefix blocking
    - Case-insensitive validation implemented
    - Length validation (100 chars max)
    - Proper error messages with user guidance
@@ -25,17 +25,17 @@ Spec: /opt/elysia/docs/specs/local-mode/phases-done/phase-6-namespace-protection
 3. ✅ Unit tests implemented correctly
    - Location: /opt/elysia/tests/api/utils/test_validation.py
    - All 6 tests from spec present and passing
-   - Tests cover: ELYSIA_ rejection, SYSTEM_ rejection, case insensitivity, valid names, empty names, length limits
+   - Tests cover: ELYSIACTL_ rejection, SYSTEM_ rejection, case insensitivity, valid names, empty names, length limits
    - Test results: 6 passed, 0 failed
 
 4. ✅ Case insensitivity verification
-   - Tested variations: ELYSIA_test, elysia_test, Elysia_Test, ElYsIa_test
+   - Tested variations: ELYSIACTL_test, elysia_test, Elysia_Test, ElYsIa_test
    - All correctly rejected
    - SYSTEM_ variations also tested and rejected
 
 5. ✅ System collections still work
    - System code bypasses validation correctly
-   - ELYSIA_CONFIG__ creation in user_config.py verified - uses direct client.collections.create()
+   - ELYSIACTL_CONFIG__ creation in user_config.py verified - uses direct client.collections.create()
    - No validation calls in system collection creation points (as intended)
 
 6. ✅ Valid names accepted
@@ -44,7 +44,7 @@ Spec: /opt/elysia/docs/specs/local-mode/phases-done/phase-6-namespace-protection
    - "collection_ELYSIA" (ELYSIA at end) accepted
 
 7. ✅ Error messages are user-friendly
-   - Clear message: "Collection names starting with 'ELYSIA_' are reserved for system use. Please choose a different name for your collection."
+   - Clear message: "Collection names starting with 'ELYSIACTL_' are reserved for system use. Please choose a different name for your collection."
    - HTTP 400 status code used appropriately
    - Actionable guidance provided
 
@@ -57,15 +57,15 @@ Unit Tests (pytest tests/api/utils/test_validation.py):
 
 Integration Tests (custom test script):
 - Validation function: ✅ All cases passed
-- Preprocessing integration: ✅ Both sync and async reject ELYSIA_ names
+- Preprocessing integration: ✅ Both sync and async reject ELYSIACTL_ names
 - Case variations: ✅ All forbidden combinations rejected
 - Valid names: ✅ All accepted correctly
 
 === MANUAL TESTING CHECKLIST (from spec) ===
-✅ Try to preprocess a collection named "ELYSIA_test" - REJECTED
+✅ Try to preprocess a collection named "ELYSIACTL_test" - REJECTED
 ✅ Verify error message is user-friendly - YES
 ✅ Try variations: "elysia_test", "Elysia_test" - ALL REJECTED
-✅ Verify system can still create ELYSIA_ collections - YES
+✅ Verify system can still create ELYSIACTL_ collections - YES
 ✅ Test that "MyElysia" and "elysia" work fine - YES
 ✅ Check API returns 400 with clear message - YES
 
@@ -75,7 +75,7 @@ All spec requirements met:
 - ✅ Validation utility created with namespace checking
 - ✅ Preprocessing functions validate collection names  
 - ✅ Case-insensitive validation works correctly
-- ✅ System can still create ELYSIA_ collections (bypasses validation)
+- ✅ System can still create ELYSIACTL_ collections (bypasses validation)
 - ✅ Clear, friendly error messages for users
 - ✅ All tests pass
 - ✅ No regressions in existing functionality
@@ -90,7 +90,7 @@ MINOR: Duplicate import in collection.py
 === CONCLUSION ===
 
 Phase 6 implementation is complete and correct. The namespace protection successfully:
-- Prevents users from creating collections with ELYSIA_ or SYSTEM_ prefixes
+- Prevents users from creating collections with ELYSIACTL_ or SYSTEM_ prefixes
 - Works case-insensitively 
 - Provides clear error messages
 - Allows system code to create reserved collections

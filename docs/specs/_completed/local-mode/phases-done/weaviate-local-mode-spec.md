@@ -7,7 +7,7 @@ The Elysia system's local Weaviate mode, with dynamic replication, has been thor
 ## Dynamic Replication
 
 The dynamic replication mechanism ensures data consistency and high availability across multiple Weaviate nodes in a local cluster. This has been rigorously tested and validated through a multi-wave testing strategy (Phase 4), confirming that:
-- System collections (ELYSIA_*) are created with the specified `replication_factor`.
+- System collections (ELYSIACTL_*) are created with the specified `replication_factor`.
 - Data is correctly replicated across all healthy nodes.
 - Derived collections inherit replication settings as expected.
 

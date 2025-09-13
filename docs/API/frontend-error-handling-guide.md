@@ -263,7 +263,7 @@ class ElysiaAPIClient {
 ### ❌ Don't Expose Internal Details
 ```javascript
 // BAD - Exposes internal collection names
-if (error.detail.includes('ELYSIA_CONFIG')) {
+if (error.detail.includes('ELYSIACTL_CONFIG')) {
     alert('System collection error: ' + error.detail);
 }
 
@@ -346,7 +346,7 @@ try {
 } catch (error) {
     // Raw error exposed
     alert(error.message); 
-    // "User with ID '123' not found in collection 'ELYSIA_CONFIG_xyz'"
+    // "User with ID '123' not found in collection 'ELYSIACTL_CONFIG_xyz'"
 }
 ```
 

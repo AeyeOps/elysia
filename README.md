@@ -156,14 +156,14 @@ Locally running versions of Weaviate are currently not implemented in the curren
 <details>
 <summary><b>How do I clear all my Elysia data?</b></summary>
 
-Everything Elysia doesn't store locally will be a collection in your Weaviate cluster. You can delete any collections that start with `ELYSIA_` to reset all your Elysia data.
+Everything Elysia doesn't store locally will be a collection in your Weaviate cluster. You can delete any collections that start with `ELYSIACTL_` to reset all your Elysia data.
 
 For example, in Python:
 ```python
 from elysia.util.client import ClientManager()
 with ClientManager().connect_to_client() as client:
     for collection_name in client.collections.list_all():
-        if collection_name.startswith("ELYSIA_"):
+        if collection_name.startswith("ELYSIACTL_"):
             client.collections.delete(collection_name)
 ```
 </details>

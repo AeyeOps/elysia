@@ -4,7 +4,7 @@
 Implement the @recoverable_endpoint decorator pattern from ADR-001 to properly handle missing user errors, preventing raw exceptions from leaking to clients and providing appropriate HTTP responses.
 
 ## Problem Summary
-When a user is not found in the system, API endpoints throw raw ValueError exceptions with internal details like "User with ID 'abc123' not found in collection 'ELYSIA_CONFIG_1169a452fe5da387b9c7ce2e6dc4cf8b'". These should return HTTP 401 with "Session not initialized" per ADR-001.
+When a user is not found in the system, API endpoints throw raw ValueError exceptions with internal details like "User with ID 'abc123' not found in collection 'ELYSIACTL_CONFIG_1169a452fe5da387b9c7ce2e6dc4cf8b'". These should return HTTP 401 with "Session not initialized" per ADR-001.
 
 ## Implementation Details
 
@@ -264,7 +264,7 @@ async def get_saved_trees(
    
    # Verify no internal paths in response
    curl -X POST http://localhost:8000/api/init/user/fake_user
-   # Should NOT contain "ELYSIA_CONFIG" or collection IDs
+   # Should NOT contain "ELYSIACTL_CONFIG" or collection IDs
    ```
 
 ## Testing
@@ -283,7 +283,7 @@ async def test_recoverable_endpoint_user_not_found():
     """Test that user not found returns 401."""
     @recoverable_endpoint
     async def test_func():
-        raise ValueError("User 'abc123' not found in collection ELYSIA_CONFIG_xyz")
+        raise ValueError("User 'abc123' not found in collection ELYSIACTL_CONFIG_xyz")
     
     with pytest.raises(HTTPException) as exc_info:
         await test_func()
@@ -383,7 +383,7 @@ def test_extract_resource_name():
 - [ ] Missing collection errors return HTTP 404 with collection name
 - [ ] KeyError returns HTTP 422 with field name
 - [ ] ConnectionError returns HTTP 503 with appropriate message
-- [ ] No internal collection names (ELYSIA_CONFIG_xxx) leak to clients
+- [ ] No internal collection names (ELYSIACTL_CONFIG_xxx) leak to clients
 - [ ] Full exception details logged server-side for debugging
 - [ ] All existing tests pass
 - [ ] New recovery tests pass

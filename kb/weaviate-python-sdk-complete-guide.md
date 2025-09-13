@@ -57,7 +57,7 @@ properties = [
 ### Collection Creation with Properties
 ```python
 collection = client.collections.create(
-    name="ELYSIA_CONFIG",
+    name="ELYSIACTL_CONFIG",
     properties=properties,
     # replication_config=ReplicationConfig(factor=3)  # If available
 )
@@ -155,10 +155,10 @@ data_object = DataObject(
     }
 )
 
-client.collections.data.insert("ELYSIA_CONFIG", data_object)
+client.collections.data.insert("ELYSIACTL_CONFIG", data_object)
 
 # Method 2: Using dictionary
-client.collections.data.insert("ELYSIA_CONFIG", {
+client.collections.data.insert("ELYSIACTL_CONFIG", {
     "user_id": "test_user",
     "config_data": "test_data",
     "timestamp": "2024-01-01T00:00:00Z"
@@ -170,15 +170,15 @@ client.collections.data.insert("ELYSIA_CONFIG", {
 from weaviate.classes.query import Filter
 
 # Get all objects
-response = client.collections.get("ELYSIA_CONFIG").get()
+response = client.collections.get("ELYSIACTL_CONFIG").get()
 
 # Filter by property
-response = client.collections.get("ELYSIA_CONFIG") \
+response = client.collections.get("ELYSIACTL_CONFIG") \
     .with_where(Filter.by_property("user_id").equal("test_user")) \
     .do()
 
 # Get by ID
-response = client.collections.get("ELYSIA_CONFIG").get_by_id("object-uuid")
+response = client.collections.get("ELYSIACTL_CONFIG").get_by_id("object-uuid")
 ```
 
 ## Collection Management

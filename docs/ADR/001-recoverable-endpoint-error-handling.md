@@ -18,7 +18,7 @@
 @router.post("/endpoint")
 async def endpoint(data: dict):
     user = get_user(data["user_id"])  # Throws ValueError with internal details
-    # Client receives: "User with ID 'abc123' not found in collection 'ELYSIA_CONFIG_1169a452fe5da387b9c7ce2e6dc4cf8b'"
+    # Client receives: "User with ID 'abc123' not found in collection 'ELYSIACTL_CONFIG_1169a452fe5da387b9c7ce2e6dc4cf8b'"
 ```
 
 ### Requirements

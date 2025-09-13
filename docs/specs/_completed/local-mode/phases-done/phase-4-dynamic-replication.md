@@ -7,12 +7,12 @@ Replace hardcoded and missing replication configurations in system collections w
 
 ### System Collections (MUST replicate to all nodes)
 Essential for system consistency and high availability:
-1. **ELYSIA_CONFIG__** - User configurations (hardcoded factor=3)
-2. **ELYSIA_FEEDBACK__** - System feedback (missing replication)
-3. **ELYSIA_METADATA__** - Collection metadata (missing replication)
+1. **ELYSIACTL_CONFIG__** - User configurations (hardcoded factor=3)
+2. **ELYSIACTL_FEEDBACK__** - System feedback (missing replication)
+3. **ELYSIACTL_METADATA__** - Collection metadata (missing replication)
 
 ### Derived Collections (inherit from parent)
-4. **ELYSIA_CHUNKED_<collection>__** - Chunked documents (missing replication, should inherit)
+4. **ELYSIACTL_CHUNKED_<collection>__** - Chunked documents (missing replication, should inherit)
 
 ### User Collections (DO NOT TOUCH)
 User-controlled collections should remain user-controlled.
@@ -28,11 +28,11 @@ replication_config=wc.Configure.replication(factor=3)
 Problem: Assumes 3-node cluster, breaks for other cluster sizes.
 
 ### 2. Missing System Collection Configs
-**ELYSIA_FEEDBACK__** - `/opt/elysia/elysia/api/utils/feedback.py:18-179`
-**ELYSIA_METADATA__** - `/opt/elysia/elysia/preprocessing/collection.py:640-644`
+**ELYSIACTL_FEEDBACK__** - `/opt/elysia/elysia/api/utils/feedback.py:18-179`
+**ELYSIACTL_METADATA__** - `/opt/elysia/elysia/preprocessing/collection.py:640-644`
 
 ### 3. Missing Derived Collection Config
-**ELYSIA_CHUNKED_** - `/opt/elysia/elysia/tools/retrieval/chunk.py:268-279`
+**ELYSIACTL_CHUNKED_** - `/opt/elysia/elysia/tools/retrieval/chunk.py:268-279`
 
 ## Solution Design
 
@@ -98,7 +98,7 @@ async def get_derived_replication_config(parent_collection_name, client):
 
 ### Implementation Changes
 
-#### 1. Fix ELYSIA_CONFIG__ Collection 
+#### 1. Fix ELYSIACTL_CONFIG__ Collection 
 **File:** `/opt/elysia/elysia/api/routes/user_config.py`  
 
 **Add import at top of file:**
@@ -115,7 +115,7 @@ replication_config=wc.Configure.replication(factor=3)
 replication_config=await get_system_replication_config(client)
 ```
 
-#### 2. Fix ELYSIA_FEEDBACK__ Collection
+#### 2. Fix ELYSIACTL_FEEDBACK__ Collection
 **File:** `/opt/elysia/elysia/api/utils/feedback.py`  
 
 **Add import at top of file:**
@@ -128,7 +128,7 @@ from elysia.util.client import get_system_replication_config
 replication_config=await get_system_replication_config(client)
 ```
 
-#### 3. Fix ELYSIA_METADATA__ Collection
+#### 3. Fix ELYSIACTL_METADATA__ Collection
 **File:** `/opt/elysia/elysia/preprocessing/collection.py`  
 
 **Add import at top of file:**
@@ -140,17 +140,17 @@ from elysia.util.client import get_system_replication_config
 ```python
 # Current:
 metadata_collection = await client.collections.create(
-    f"ELYSIA_METADATA__",
+    f"ELYSIACTL_METADATA__",
     vectorizer_config=Configure.Vectorizer.none(),
 
 # New:
 metadata_collection = await client.collections.create(
-    f"ELYSIA_METADATA__",
+    f"ELYSIACTL_METADATA__",
     vectorizer_config=Configure.Vectorizer.none(),
     replication_config=await get_system_replication_config(client),
 ```
 
-#### 4. Fix ELYSIA_CHUNKED_* Collections
+#### 4. Fix ELYSIACTL_CHUNKED_* Collections
 **File:** `/opt/elysia/elysia/tools/retrieval/chunk.py`  
 
 **Add import at top of file:**

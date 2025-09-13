@@ -15,7 +15,7 @@ Implement Wave 1 tests to validate dynamic replication works correctly in a 3-no
 
 ## Key Scripts Needed
 - `cluster_check.py`: Detect and report node status
-- `create_system_collections.py`: Initialize ELYSIA_* collections with proper replication
+- `create_system_collections.py`: Initialize ELYSIACTL_* collections with proper replication
 - `verify_replication.py`: Confirm data sync across nodes
 - `test_derived_collections.py`: Validate CHUNKED_* inheritance
 
